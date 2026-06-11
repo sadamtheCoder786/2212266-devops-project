@@ -19,28 +19,20 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            rm -rf ~/app
+            git clone https://github.com/sadamtheCoder786/2212266-devops-project ~/app
             cd ~/app
 
-            # Pull latest code
-            if [ -d ".git" ]; then
-              git pull origin main
-            else
-              git clone https://github.com/${{ github.repository }} .
-            fi
-
-            # Write the .env file from secrets
-            cat > .env << EOF
+            cat > .env << 'ENVEOF'
             POSTGRES_USER=devuser
             POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}
             POSTGRES_DB=devdb
             DATABASE_URL=postgresql://devuser:${{ secrets.DB_PASSWORD }}@db:5432/devdb
             STUDENT_REG_NO=${{ secrets.STUDENT_REG_NO }}
-            EOF
+            ENVEOF
 
-            # Deploy with prod compose file
-            docker compose -f docker-compose.prod.yml down
+            docker compose -f docker-compose.prod.yml down --remove-orphans 2>/dev/null || true
             docker compose -f docker-compose.prod.yml up --build -d
 
-            # Wait for app to be healthy
-            sleep 10
+            sleep 15
             curl -f http://localhost:8000/health || exit 1

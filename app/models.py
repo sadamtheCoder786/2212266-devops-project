@@ -1,0 +1,11 @@
+from sqlalchemy import Column, Integer, String
+from .database import Base
+
+
+class Student(Base):
+    _tablename_ = "students"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    reg_no = Column(String, unique=True, index=True, nullable=False)
+    course = Column(String, nullable=False)

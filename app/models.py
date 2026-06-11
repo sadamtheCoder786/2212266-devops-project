@@ -9,3 +9,4 @@ class Student(Base):
     name = Column(String, nullable=False)
     reg_no = Column(String, unique=True, index=True, nullable=False)
     course = Column(String, nullable=False)
+    

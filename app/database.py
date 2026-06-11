@@ -28,4 +28,3 @@ def check_db_connection():
         return True
     except Exception:
         return False
-    
